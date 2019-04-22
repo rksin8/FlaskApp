@@ -95,5 +95,11 @@ def logout():
     session.pop('user', None)
     return redirect('/')
 
+
+@app.route('/showAddBlog')
+def showAddBlog():
+    return render_template('addBlog.html'
+
+
 if __name__ == "__main__":
    app.run()
