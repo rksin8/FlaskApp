@@ -101,5 +101,11 @@ def showAddBlog():
     return render_template('addBlog.html'
 
 
+
+
+@app.route('/addBlog',methods=['POST'])
+def addBlog():
+
+
 if __name__ == "__main__":
    app.run()
