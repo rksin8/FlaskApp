@@ -6,8 +6,24 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link href="https://getbootstrap.com/docs/3.4/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
 
-    <link href="../static/css/signup.css" rel="stylesheet">
-    <script src="../static/js/jquery-3.4.0.min.js"></script>
+    <link href="static/css/signup.css" rel="stylesheet">
+    <script src="static/js/jquery-3.1.1.min.js"></script>
+
+    <script>
+  $(function() {
+    $.ajax({
+        url: '/getBlog',
+        type: 'GET',
+        success: function(res) {
+            console.log(res);
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+  });
+</script>
+
 
       
   </head>
@@ -31,7 +47,7 @@
       </div>      
 
       <footer class="footer">
-        <p>©etaman.com 2017</p>
+        <p>&copy blog.com 2019</p>
       </footer>
 
     </div>
