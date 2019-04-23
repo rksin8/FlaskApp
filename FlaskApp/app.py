@@ -141,11 +141,154 @@ def showAddBlog():
     return render_template('addBlog.html')
 
 
+@app.route('/deleteBlog',methods=['POST'])
+def deleteBlog():
+    try:
+        if session.get('user'):
+            _id = request.form['id']
+            _user = session.get('user')
+
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            cursor.callproc('sp_deleteBlog',(_id,_user))
+            result = cursor.fetchall()
+
+            if len(result) is 0:
+                conn.commit()
+                return json.dumps({'status':'OK'})
+            else:
+                return json.dumps({'status':'An Error occured'})
+        else:
+            return render_template('error.html',error = 'Unauthorized Access')
+    except Exception as e:
+        return json.dumps({'status':str(e)})
+    finally:
+        cursor.close()
+        conn.close()
+
+
+
+@app.route('/getBlogById',methods=['POST'])
+def getBlogById():
+    try:
+        if session.get('user'):
+            _id = request.form['id']
+            _user = session.get('user')
+
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            cursor.callproc('sp_GetBlogById',(_id,_user))
+            result = cursor.fetchall()
+
+            blog = []
+            blog.append({'Id':result[0][0],'Title':result[0][1],'Description':result[0][2]})
+
+            return json.dumps(blog)
+        else:
+            print("fail getBlogById()")
+            return render_template('error.html', error = 'Unauthorized Access')
+    except Exception as e:
+        return render_template('error.html',error = str(e))
+
+
+
+
+@app.route('/getBlog')
+def getBlog():
+    try:
+        if session.get('user'):
+            _user = session.get('user')
+            con = mysql.connect()
+            cursor = con.cursor()
+            cursor.callproc('sp_GetBlogByUser',(_user,))
+            blogs = cursor.fetchall()
+            blogs_dict = []
+            for blog in blogs:
+                blog_dict = {
+                        'Id': blog[0],
+                        'Title': blog[1],
+                        'Description': blog[2],
+                        'Date': blog[4]}
+                blogs_dict.append(blog_dict)
+            return json.dumps(blogs_dict)
+        else:
+            print("error : getBlog()")
+            return render_template('error.html', error = 'Unauthorized Access')
+    except Exception as e:
+        return render_template('error.html', error = str(e))
+
+
 
 
 @app.route('/addBlog',methods=['POST'])
 def addBlog():
-    return render_template('addBlog.html')
+    try:
+        if session.get('user'):
+            _title = request.form['inputTitle']
+            _description = request.form['inputDescription']
+            _user = session.get('user')
+
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            cursor.callproc('sp_addBlog',(_title,_description,_user))
+            data = cursor.fetchall()
+
+            if len(data) is 0:
+                conn.commit()
+                return redirect('/userHome')
+            else:
+                return render_template('error.html',error = 'An error occurred!')
+
+        else:
+            return render_template('error.html',error = 'Unauthorized Access')
+    except Exception as e:
+        return render_template('error.html',error = str(e))
+    finally:
+        cursor.close()
+        conn.close()
+
+
+
+
+
+@app.route('/updateBlog', methods=['POST'])
+def updateBlog():
+    try:
+        if session.get('user'):
+            _user = session.get('user')
+            _title = request.form['title']
+            _description = request.form['description']
+            _blog_id = request.form['id']
+
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            cursor.callproc('sp_updateBlog',(_title,_description,_blog_id,_user))
+            data = cursor.fetchall()
+
+            if len(data) is 0:
+                conn.commit()
+                return json.dumps({'status':'OK'})
+            else:
+                return json.dumps({'status':'ERROR'})
+    except Exception as e:
+        return json.dumps({'status':'Unauthorized access'})
+    finally:
+        cursor.close()
+        conn.close()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
