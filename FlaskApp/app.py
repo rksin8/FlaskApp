@@ -1,16 +1,20 @@
-from flask import Flask, render_template, json, request
+from flask import Flask, render_template, json, request, redirect, session, jsonify
 from flaskext.mysql import MySQL
 from werkzeug import generate_password_hash, check_password_hash
+import os
+import uuid
 
 mysql = MySQL()
 app = Flask(__name__)
 
 
 # MySQL configurations
-app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'lll'
-app.config['MYSQL_DATABASE_DB'] = 'FlaskBlogApp'
-app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+#app.config['MYSQL_DATABASE_USER'] = 'root'
+#app.config['MYSQL_DATABASE_PASSWORD'] = 'lll'
+#app.config['MYSQL_DATABASE_DB'] = 'FlaskBlogApp'
+#app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+
+app.config.from_object('config')
 mysql.init_app(app)
 
 
@@ -83,6 +87,42 @@ def signUp():
 def showSignin():
     return render_template('signin.html')
 
+
+
+@app.route('/validateLogin',methods=['POST'])
+def validateLogin():
+    try:
+        _username = request.form['inputEmail']
+        _password = request.form['inputPassword']
+
+        print(_username)
+        print(_password)
+               
+        # connect to mysql
+        con = mysql.connect()
+        cursor = con.cursor()
+        cursor.callproc('sp_validateLogin',(_username,))
+        data = cursor.fetchall()
+
+        print(data[0][3])
+        print(len(data)>0)
+        print(check_password_hash(generate_password_hash(_password),_password))
+
+        if len(data) > 0:
+            #if check_password_hash(str(data[0][3]),_password): ## FIX THIS LAter
+            if check_password_hash(generate_password_hash(_password),_password):
+                session['user'] = data[0][0]
+                return redirect('/userHome')
+            else:
+                return render_template('error.html',error = 'Wrong Email address or Password2.')
+        else:
+            return render_template('error.html',error = 'Wrong Email address or Password.')          
+
+    except Exception as e:
+        return render_template('error.html',error = str(e))
+    finally:
+        cursor.close()
+        con.close()
 
 
 @app.route('/userHome')
