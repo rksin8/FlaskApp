@@ -18,6 +18,17 @@ app.config.from_object('config')
 mysql.init_app(app)
 
 
+
+@app.route('/upload', methods=['GET', 'POST'])
+def upload():
+    if request.method == 'POST':
+        file = request.files['file']
+        extension = os.path.splitext(file.filename)[1]
+        f_name = str(uuid.uuid4()) + extension
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], f_name))
+    return json.dumps({'filename':f_name})
+
+
 # basic route
 @app.route("/")
 def main():
@@ -220,6 +231,34 @@ def getBlog():
 
 
 
+#@app.route('/addBlog',methods=['POST'])
+#def addBlog():
+#    try:
+#        if session.get('user'):
+#            _title = request.form['inputTitle']
+#            _description = request.form['inputDescription']
+#            _user = session.get('user')
+#
+#            conn = mysql.connect()
+#            cursor = conn.cursor()
+#            cursor.callproc('sp_addBlog',(_title,_description,_user))
+#            data = cursor.fetchall()
+#
+#            if len(data) is 0:
+#                conn.commit()
+#                return redirect('/userHome')
+#            else:
+#                return render_template('error.html',error = 'An error occurred!')
+#
+#        else:
+#            return render_template('error.html',error = 'Unauthorized Access')
+#    except Exception as e:
+#        return render_template('error.html',error = str(e))
+#    finally:
+#        cursor.close()
+#        conn.close()
+#
+
 @app.route('/addBlog',methods=['POST'])
 def addBlog():
     try:
@@ -228,9 +267,23 @@ def addBlog():
             _description = request.form['inputDescription']
             _user = session.get('user')
 
+            if request.form.get('filePath') is None:
+                _filePath = ''
+            else:
+                _filePath = request.form.get('filePath')
+            if request.form.get('private') is None:
+                _private = 0
+            else:
+                _private = 1
+            if request.form.get('done') is None:
+                _done = 0
+            else:
+                _done = 1            
+
             conn = mysql.connect()
             cursor = conn.cursor()
-            cursor.callproc('sp_addBlog',(_title,_description,_user))
+            #cursor.callproc('sp_addBlog',(_title,_description,_user))
+            cursor.callproc('sp_addBlog',(_title,_description,_user,_filePath,_private,_done))
             data = cursor.fetchall()
 
             if len(data) is 0:
@@ -246,9 +299,6 @@ def addBlog():
     finally:
         cursor.close()
         conn.close()
-
-
-
 
 
 @app.route('/updateBlog', methods=['POST'])
