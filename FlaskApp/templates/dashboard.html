@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <title>Python Flask Blog App</title>
+ 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+ 
+    <link href="//getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+
+<script>
+$(function() {
+    $.ajax({
+        url: '/getAllBlogs',
+        type: 'GET',
+        success: function(response) {
+            console.log(response);
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+})
+</script>
+
+</head>
+ 
+<body>
+ 
+    <div class="container">
+        <div class="header">
+            <nav>
+                <ul class="nav nav-pills pull-right">
+                    <li role="presentation" class="active"><a href="#">Dashboard</a></li>
+                    <li role="presentation"><a href="/userHome">My List</a></li>
+                    <li role="presentation"><a href="/showAddBlog">Add Item</a></li>
+                    <li role="presentation"><a href="/logout">Logout</a></li>
+                </ul>
+            </nav>
+            <img src="/static/images/Flask_Icon.png" alt="Flask_Icon.png"/ >
+        </div>
+ 
+        <div class="well">
+            <div class="row">
+                <div class="col-sm-4 col-md-4">
+                    <div class="thumbnail">
+                        <img alt="100%x200" src="static/Uploads/jupiter.jpeg"  data-holder-rendered="true" style="height: 150px; width: 150px; display: block;">
+                        <div class="caption">
+                            <h3>Jupiter</h3>
+                            <p>On Jupiter.</p>
+                            <p>
+                                <button type="button" class="btn btn-danger btn-sm">
+                                    <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+                                </button>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4 col-md-4">
+                    <div class="thumbnail">
+                        <img alt="100%x200" src="static/Uploads/Andromeda_galaxy.jpg" data-holder-rendered="true" style="height: 150px; width: 150px; display: block;">
+                        <div class="caption">
+                            <h3>Andromeda</h3>
+                            <p>On Andromeda</p>
+                            <p>
+                                <button type="button" class="btn btn-danger btn-sm">
+                                    <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+                                </button>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4 col-md-4">
+                    <div class="thumbnail">
+                        <img alt="100%x200" src="static/Uploads/standmodel.jpeg" data-holder-rendered="true" style="height: 150px; width: 150px; display: block;">
+                        <div class="caption">
+                            <h3>Standmodel</h3>
+                            <p>On standmodel</p>
+                            <p>
+                                <button type="button" class="btn btn-danger btn-sm">
+                                    <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+                                </button>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+ 
+                <div class="row">
+                    <div class="col-sm-4 col-md-4">
+                        <div class="thumbnail">
+                            <img alt="100%x200" src="static/Uploads/drone.jpeg" data-holder-rendered="true" style="height: 150px; width: 150px; display: block;">
+                            <div class="caption">
+                                <h3>Drone</h3>
+                                <p>On drone</p>
+                                <p>
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+                                    </button>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4 col-md-4">
+                        <div class="thumbnail">
+                            <img alt="100%x200" src="static/Uploads/canada.jpg" data-holder-rendered="true" style="height: 150px; width: 150px; display: block;">
+                            <div class="caption">
+                                <h3>Canada</h3>
+                                <p>On Canada</p>
+                                <p>
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+                                    </button>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4 col-md-4">
+                        <div class="thumbnail">
+                            <img alt="100%x200" src="static/Uploads/Everest.jpeg" data-holder-rendered="true" style="height: 150px; width: 150px; display: block;">
+                            <div class="caption">
+                                <h3>Everest</h3>
+                                <p>On Everest</p>
+                                <p>
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+                                    </button>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+ 
+            </div>
+ 
+            <footer class="footer">
+                <p>blog.com 2019</p>
+            </footer>
+ 
+        </div>
+</body>
+ 
+</html>

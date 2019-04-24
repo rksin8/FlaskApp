@@ -19,6 +19,36 @@ mysql.init_app(app)
 
 
 
+@app.route('/getAllBlogs')
+def getAllBlogs():
+    try:
+        if session.get('user'):
+
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            cursor.callproc('sp_GetAllBlogs')
+            result = cursor.fetchall()
+
+            blogs_dict = []
+            for blog in result:
+                blog_dict = {
+                        'Id': blog[0],
+                        'Title': blog[1],
+                        'Description': blog[2],
+                        'FilePath': blog[3]}
+                blogs_dict.append(blog_dict)
+
+            return json.dumps(blogs_dict)
+        else:
+            return render_template('error.html', error = 'Unauthorized Access')
+    except Exception as e:
+        return render_template('error.html',error = str(e))
+
+@app.route('/showDashboard')
+def showDashboard():
+    return render_template('dashboard.html')
+
+
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
     if request.method == 'POST':
@@ -123,7 +153,8 @@ def validateLogin():
             #if check_password_hash(str(data[0][3]),_password): ## FIX THIS LAter
             if check_password_hash(generate_password_hash(_password),_password):
                 session['user'] = data[0][0]
-                return redirect('/userHome')
+                #return redirect('/userHome')
+                return redirect('/showDashboard')
             else:
                 return render_template('error.html',error = 'Wrong Email address or Password2.')
         else:
@@ -192,7 +223,8 @@ def getBlogById():
             result = cursor.fetchall()
 
             blog = []
-            blog.append({'Id':result[0][0],'Title':result[0][1],'Description':result[0][2]})
+            #blog.append({'Id':result[0][0],'Title':result[0][1],'Description':result[0][2]})
+            blog.append({'Id':result[0][0],'Title':result[0][1],'Description':result[0][2],'FilePath':result[0][3],'Private':result[0][4],'Done':result[0][5]})
 
             return json.dumps(blog)
         else:
