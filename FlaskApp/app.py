@@ -1,4 +1,4 @@
-from flask import Flask, render_template, json, request, redirect, session, jsonify
+
 from flaskext.mysql import MySQL
 from werkzeug import generate_password_hash, check_password_hash
 import os
@@ -17,7 +17,33 @@ app = Flask(__name__)
 app.config.from_object('config')
 mysql.init_app(app)
 
+@app.route('/addUpdateLike',methods=['POST'])
+def addUpdateLike():
+    try:
+        if session.get('user'):
+            _blogId = request.form['blog']
+            _like = request.form['like']
+            _user = session.get('user')
+           
 
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            cursor.callproc('sp_AddUpdateLikes',(_blogId,_user,_like))
+            data = cursor.fetchall()
+
+            if len(data) is 0:
+                conn.commit()
+                return json.dumps({'status':'OK'})
+            else:
+                return render_template('error.html',error = 'An error occurred!')
+
+        else:
+            return render_template('error.html',error = 'Unauthorized Access')
+    except Exception as e:
+        return render_template('error.html',error = str(e))
+    finally:
+        cursor.close()
+        conn.close()
 
 @app.route('/getAllBlogs')
 def getAllBlogs():
@@ -35,7 +61,8 @@ def getAllBlogs():
                         'Id': blog[0],
                         'Title': blog[1],
                         'Description': blog[2],
-                        'FilePath': blog[3]}
+                        'FilePath': blog[3],
+                        'Like':blog[4]}
                 blogs_dict.append(blog_dict)
 
             return json.dumps(blogs_dict)

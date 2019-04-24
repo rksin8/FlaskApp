@@ -1,19 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+ 
+<head>
     <title>Python Flask Blog App</title>
+ 
+ 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+ 
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+ 
+    <script src="/static/js/jquery-3.1.1.js"></script>
+    <script src="/static/js/jquery.ui.widget.js"></script>
+  
+    <script type="text/javascript" src="/static/js/jquery.fileupload.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.fileupload-process.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.fileupload-ui.js"></script>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link href="https://getbootstrap.com/docs/3.4/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+    <script>
+      $(function(){
+            $('#fileupload').fileupload({
+                url: 'upload',
+                dataType: 'json',
+                add: function (e, data) {
+                  data.submit();
+                },
+                success:function(response,status) {
+                  console.log(response.filename);
+                  var filePath = 'static/Uploads/' + response.filename;
+                  $('#imgUpload').attr('src',filePath);
+                  $('#filePath').val(filePath);
+                  console.log('success');
+                },
+                error:function(error){
+                        console.log(error);
+                }
+            });
+      })
+    </script>
 
-    <link href="static/css/signup.css" rel="stylesheet">
-    <script src="static/js/jquery-3.1.1.js"></script>
-
-
-<script src="/static/js/jquery.ui.widget.js"></script>
-<script type="text/javascript" src="/static/js/jquery.fileupload.js"></script>
-<script type="text/javascript" src="/static/js/jquery.fileupload-process.js"></script>
-<script type="text/javascript" src="/static/js/jquery.fileupload-ui.js"></script>
     <style>
         .btn-file {
             position: relative;
@@ -36,48 +60,23 @@
             display: block;
         }
     </style>
-
-<script>
-  $(function(){
-        $('#fileupload').fileupload({
-            url: 'upload',
-            dataType: 'json',
-            add: function (e, data) {
-              data.submit();
-            },
-            success:function(response,status) {
-              console.log(response.filename);
-              var filePath = 'static/Uploads/' + response.filename;
-              $('#imgUpload').attr('src',filePath);
-              $('#filePath').val(filePath);
-              console.log('success');
-            },
-            error:function(error){
-                    console.log(error);
-            }
-        });
-  })
-</script>
-
-    
-  </head>
-
-
+ 
+</head>
+ 
 <body>
  
     <div class="container">
         <div class="header">
-            <nav>
-                <ul class="nav nav-pills pull-right">
-                    <li role="presentation" class="active"><a href="#">Add Item</a>
-                    </li>
-                    <li role="presentation"><a href="/logout">Logout</a>
-                    </li>
-                </ul>
-            </nav>
-            <img src="/static/images/Flask_Icon.png" alt="Flask_Icon.png"/ >
+          <nav>
+            <ul class="nav nav-pills pull-right">
+              <li role="presentation"><a href="/userHome">Home</a></li>
+              <li role="presentation" class="active"><a href="#">Add Item</a></li>
+              <li role="presentation" ><a href="/logout">Logout</a></li>
+            </ul>
+          </nav>
+        <img src="/static/images/Flask_Icon.png" alt="Flask_Icon.png"/ >
         </div>
- 
+
         <form role="form" method="post" action="/addBlog">
  
             <!-- Form Name -->
@@ -99,22 +98,20 @@
  
             </div>
  
-            <div class="form-group">
-                <label for="txtPost">Photos</label>
- 
-                <div class="input-group">
-                    <span class="input-group-btn">
-                    <span class="btn btn-primary btn-file">
-                        Browse… <input type="file" id="fileupload" name="file" multiple>
-                    </span>
-                    </span>
-                    <input type="text" class="form-control" readonly>
-                </div>
 
-            <div class="pull-right">
-                <img id="imgUpload" style="width: 140px; height: 140px;" class="img-thumbnail"><input type="hidden" name="filePath" id="filePath"></input>
-            </div>
+            <div class="form-group">
+              <label for="txtPost">Photos</label>
  
+              <div class="input-group">
+                <span class="input-group-btn">
+                  <span class="btn btn-primary btn-file">
+                      Browse&hellip; <input type="file" id="fileupload" name="file" multiple>
+                  </span>
+                </span>
+                <div class="pull-right">
+                  <img id="imgUpload" style="width: 140px; height: 140px;" class="img-thumbnail"><input type="hidden" name="filePath" id="filePath"></input>
+                </div>
+              </div>
             </div>
  
             <div class="form-group">
@@ -128,7 +125,7 @@
                 <br/>
                 <input type="checkbox"> Mark as Done <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
             </div>
-
+ 
             <!-- Button -->
             <div class="form-group">
  
@@ -136,18 +133,15 @@
                     <input id="singlebutton" name="singlebutton" class="btn btn-primary" type="submit" value="Publish" />
                 </p>
             </div>
-
-
-
+ 
  
         </form>
-
-
-      
-      <footer class="footer">
-        <p> &copy myblog.com 2019</p>
-      </footer>
-
+ 
+        <footer class="footer">
+            <p>&copy; blog.com 2019</p>
+        </footer>
+ 
     </div>
-  </body>
+</body>
+ 
 </html>

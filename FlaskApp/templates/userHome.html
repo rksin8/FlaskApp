@@ -3,14 +3,32 @@
   <head>
     <title>Python Flask Blog App</title>
    
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
     <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
     <link href="/static/css/signup.css" rel="stylesheet">
     <script src="/static/js/jquery-3.1.1.js"></script>
+    <script src="/static/js/canvas-to-blob.min.js"></script>
+    <script src="/static/js/load-image.all.min.js"></script>
+    <script src="/static/js/jquery.iframe-transport.js"></script>
     <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+
     <script>
+      $(function() {
+          $.ajax({
+              url: '/getAllBlogs',
+              type: 'GET',
+              success: function(response) {
+                  console.log(response);
+              },
+              error: function(error) {
+                  console.log(error);
+              }
+          });
+      })
       $(function(){   
           $('#btnUpdate').click(function(){
             $.ajax({
@@ -95,14 +113,17 @@
               },
               type: 'POST',
               success: function(res) {
-                // Parse the received JSON string
                 var data = JSON.parse(res);
-                 
-                //Populate the Pop up
+                console.log(data);
                 $('#editTitle').val(data[0]['Title']);
                 $('#editDescription').val(data[0]['Description']);
-                 
-                // Trigger the Pop Up
+                $('#imgUpload').attr('src',data[0]['FilePath']);
+                if(data[0]['Private']=="1"){
+                  $('#chkPrivate').attr('checked','checked');
+                }
+                if(data[0]['Done']=="1"){
+                  $('#chkDone').attr('checked','checked');
+                }
                 $('#editModal').modal();
               },
               error: function(error) {
@@ -131,6 +152,7 @@
       <div class="header">
         <nav>
           <ul class="nav nav-pills pull-right">
+            <li role="presentation"><a href="/showDashboard">Dashboard</a></li>
             <li role="presentation"><a href="/showAddBlog">Add Blog</a></li>
             <li role="presentation" class="active"><a href="/logout">Logout</a></li>
           </ul>
@@ -182,56 +204,33 @@
                   <label for="message-text" class="control-label">Description:</label>
                   <textarea class="form-control" id="editDescription"></textarea>
                 </div>
-              </form>
+
+                <div class="form-group">
+                  <label for="txtPost">Photos</label>
+                                 
+                  <div class="input-group">
+                    <span class="input-group-btn">
+                      <span class="btn btn-primary btn-file">
+                            Browse&hellip; <input type="file" id="fileupload" name="file" multiple>
+                      </span>
+                    </span>
+                    <div class="pull-right">
+                      <img id="imgUpload" style="width: 140px; height: 140px;" class="img-thumbnail"><input type="hidden" name="filePath" id="filePath"></input>
+                    </div>
+                  </div> 
+                </div>
+
+                <div class="form-group">
+                  <label>Mark this as private and not visible to others.</label><br/>
+                  <input id="chkPrivate" name="private" type="checkbox"> Mark as Private <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+                </div>
+
+                <div class="form-group">
+                  <label>Have you already accomplished this?</label><br/>
+                  <input id="chkDone" name="done" type="checkbox"> Mark as Done <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                </div>
+             </form>
             </div>
-
-<div class="modal-body">
-  <form role="form">
-    <div class="form-group">
-      <label for="recipient-name" class="control-label">Title:</label>
-      <input type="text" class="form-control" id="editTitle">
-    </div>
-    <div class="form-group">
-      <label for="message-text" class="control-label">Description:</label>
-      <textarea class="form-control" id="editDescription"></textarea>
-    </div>
-
-    <div class="form-group">
-      <label for="txtPost">Photos</label>
-                     
-      <div class="input-group">
-        <span class="input-group-btn">
-          <span class="btn btn-primary btn-file">
-                Browse… <input type="file" id="fileupload" name="file" multiple>
-          </span>
-        </span>
-        <div class="pull-right">
-          <img id="imgUpload" style="width: 140px; height: 140px;" class="img-thumbnail"><input type="hidden" name="filePath" id="filePath"></input>
-        </div>
-      </div> 
-    </div>
-
-    <div class="form-group">
-      <label>Mark this as private and not visible to others.</label><br/>
-      <input id="chkPrivate" name="private" type="checkbox"> Mark as Private <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
-    </div>
-
-    <div class="form-group">
-      <label>Have you already accomplished this?</label><br/>
-      <input id="chkDone" name="done" type="checkbox"> Mark as Done <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-    </div>
- </form>
-</div>
-
-
-
-
-
-
-
-
-
-
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
               <button id="btnUpdate" type="button" class="btn btn-primary">Update</button>
@@ -257,7 +256,7 @@
 
 
       <footer class="footer">
-        <p>&copy; blog.com 2018</p>
+        <p>&copy; blog.com 2019</p>
       </footer>
 
     </div>
